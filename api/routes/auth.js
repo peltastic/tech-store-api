@@ -1,9 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const signUpController = require("../controllers/auth");
+const authController = require("../controllers/auth");
+const verifyJwt = require("../middleware/authJwt")
 
-router.post("/signup", signUpController.sign_user_up);
-router.post("/login",);
-router.get("/test", signUpController.test_func);
+
+router.post("/signup", authController.sign_user_up);
+router.post("/login", authController.login_user);                           
+router.post("/user", [verifyJwt.verifyToken, verifyJwt.isUser] ,authController.is_logged_in);                           
+router.post("/admin", [verifyJwt.verifyToken, verifyJwt.isAdmin] ,authController.is_logged_in_admin);
+router.post("/refresh", authController.refreshToken)                           
+// router.get("/test", authController.test_func);
 
 module.exports = router;

@@ -1,10 +1,11 @@
-module.exports.User = (sequelize, DataTypes) =>
-  sequelize.define("users", {
-    userID: {
-        type: DataTypes.UUID,
-        primaryKey: true
+
+const User = (sequelize, DataTypes) => {
+  const user = sequelize.define("users", {
+    user_id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
     },
-    userName: {
+    user_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -16,8 +17,13 @@ module.exports.User = (sequelize, DataTypes) =>
       type: DataTypes.STRING,
       allowNull: false,
     },
-    userRole: {
+    user_role: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
   });
+  return user
+}
+
+
+module.exports = {User}

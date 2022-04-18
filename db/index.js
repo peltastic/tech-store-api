@@ -1,26 +1,31 @@
-const { Sequelize, DataTypes, QueryTypes } = require("sequelize");
-const Models = require("./models");
+const { Sequelize, DataTypes } = require("sequelize");
+const UserModels = require("./models/user.model");
+const RefreshModels = require("./models/refresh.model");
+const dbConfig = require("../api/config/db");
+
 const sequelize = new Sequelize(
-  "tech_store",
-  "postgres",
-  "3123pex3123",
+  dbConfig.DB_NAME,
+  dbConfig.DB_DRIVER,
+  dbConfig.DB_PASSWORD,
   {
     host: "localhost",
     dialect: "postgres",
   }
 );
-
+const User = UserModels.User(sequelize, DataTypes)
+const Refresh = RefreshModels.Refresh(sequelize, DataTypes);
 const init = async () => {
-  // console.log(a)
+  User.hasOne(Refresh, {
+    foreignKey: "id"
+  });
   try {
     await sequelize.authenticate();
     console.log("Connection has been established successfully.");
   } catch (error) {
     console.error("Unable to connect to the database:", error);
   }
-  await Models.User(sequelize, DataTypes).sync();
+  await User.sync();
+  await Refresh.sync();
 };
-const User = Models.User(sequelize, DataTypes)
-
-
-module.exports = {init, User, sequelize}
+;
+module.exports = { init, sequelize, DataTypes, User, Refresh };

@@ -1,4 +1,7 @@
-module.exports.Roles ={
-    "Admin": 5180,
-    "User": 9000
+const dotenv = require("dotenv")
+dotenv.config()
+
+module.exports.Roles = {
+    "Admin": process.env.ADMIN,
+    "User":  process.env.USER
 }

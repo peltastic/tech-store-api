@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 const authConfig = require("../config/auth")
 const options = {
-    expiresIn: "1h"
+    expiresIn: "60s"
 }
 
 
