@@ -1,7 +1,9 @@
 const { Sequelize, DataTypes } = require("sequelize");
 const UserModels = require("./models/user.model");
 const RefreshModels = require("./models/refresh.model");
-const dbConfig = require("../api/config/db");
+const PhonesModels = require("./models/products/phones.model");
+const LaptopModels = require("./models/products/laptops.model");
+const dbConfig = require("../config/db");
 
 const sequelize = new Sequelize(
   dbConfig.DB_NAME,
@@ -12,11 +14,13 @@ const sequelize = new Sequelize(
     dialect: "postgres",
   }
 );
-const User = UserModels.User(sequelize, DataTypes)
+const User = UserModels.User(sequelize, DataTypes);
 const Refresh = RefreshModels.Refresh(sequelize, DataTypes);
+const ProductPhones = PhonesModels.Phones(sequelize, DataTypes);
+const ProductLaptops = LaptopModels.Laptops(sequelize, DataTypes);
 const init = async () => {
   User.hasOne(Refresh, {
-    foreignKey: "id"
+    foreignKey: "id",
   });
   try {
     await sequelize.authenticate();
@@ -26,6 +30,15 @@ const init = async () => {
   }
   await User.sync();
   await Refresh.sync();
+  await ProductLaptops.sync();
+  await ProductPhones.sync();
 };
-;
-module.exports = { init, sequelize, DataTypes, User, Refresh };
+module.exports = {
+  init,
+  sequelize,
+  DataTypes,
+  User,
+  Refresh,
+  ProductLaptops,
+  ProductPhones,
+};

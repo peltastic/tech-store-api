@@ -1,5 +1,5 @@
 const Models = require('../../db')
-const authConfig = require("../config/auth")
+const authConfig = require("../../config/auth")
 const {v4} = require('uuid')
 
 const createToken = async function (user) {

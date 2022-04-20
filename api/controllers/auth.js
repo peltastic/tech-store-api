@@ -1,13 +1,12 @@
-// const dotenv = require('dotenv')
-// const jwt = require('jsonwebtoken')
 const bcrypt = require("bcrypt");
-const roles = require("../config/roles");
-const Models = require("../../db");
+const roles = require("../../config/roles");
+const DB = require("../../db");
 const sequelizeInstance = require("../../db");
 const jwtToken = require("../utils/generateJwt");
 const { v4 } = require("uuid");
 const { QueryTypes } = require("sequelize");
 const refreshUtils = require("../utils/refresh");
+const authConfig = require("../../config/auth")
 
 const sign_user_up = async (req, res) => {
   const { name, email, password } = req.body;
@@ -20,7 +19,7 @@ const sign_user_up = async (req, res) => {
     return res.status(409).json({ error: "email already exists" });
   }
   const hash = await bcrypt.hash(password, 14);
-  const user = await Models.User.create({
+  const user = await DB.User.create({
     user_id: v4(),
     user_name: name,
     password: hash,
@@ -102,7 +101,7 @@ const refreshToken = async (req, res) => {
     return;
   }
   if (refreshUtils.verifyExpiration(refreshTokenDB[0])) {
-    Models.Refresh.destroy({ where: { id: refreshTokenDB[0].id } });
+    await DB.Refresh.destroy({ where: { id: refreshTokenDB[0].id } });
     res.status(403).json({
       message: "Refresh token was expired. Please make a new signin request",
     });
@@ -122,10 +121,20 @@ const refreshToken = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  const {userId} = req.body
+  if (!userId) return res.sendStatus(403)
+  await DB.Refresh.destroy({where: {
+    id: userId 
+  }})
+  return res.sendStatus(200)
+}
+
 module.exports = {
   sign_user_up,
   login_user,
   is_logged_in,
   is_logged_in_admin,
   refreshToken,
+  logout
 };

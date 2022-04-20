@@ -9,6 +9,7 @@ router.post("/login", authController.login_user);
 router.post("/user", [verifyJwt.verifyToken, verifyJwt.isUser] ,authController.is_logged_in);                           
 router.post("/admin", [verifyJwt.verifyToken, verifyJwt.isAdmin] ,authController.is_logged_in_admin);
 router.post("/refresh", authController.refreshToken)                           
+router.post("/logout", verifyJwt.verifyToken, authController.logout)                           
 // router.get("/test", authController.test_func);
 
 module.exports = router;

@@ -1,15 +1,12 @@
 const jwt = require("jsonwebtoken")
-const authConfig = require("../config/auth")
-const options = {
-    expiresIn: "60s"
-}
+const authConfig = require("../../config/auth")
 
 
 
 async function generateJwt(email, userId) {
     try {
         const payload = {email: email, id: userId};
-        const token = await jwt.sign(payload, authConfig.JWT_SECRET, options)
+        const token = await jwt.sign(payload, authConfig.JWT_SECRET, {expiresIn: authConfig.JWT_EXPIRATION})
         return {error: false, token: token}
     } catch(error){
         return {error: true}
