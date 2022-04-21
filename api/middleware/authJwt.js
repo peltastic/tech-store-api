@@ -66,7 +66,7 @@ const isAdmin = async (req, res, next) => {
         }
     )
     const role = user_role[0]
-    if (role === 5180) {
+    if (role.user_role === 5180) {
         next();
         return
     }

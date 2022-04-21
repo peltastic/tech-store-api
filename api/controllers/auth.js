@@ -100,6 +100,7 @@ const refreshToken = async (req, res) => {
     res.status(403).json({ message: "Refresh token is not in database!" });
     return;
   }
+  console.log(refreshTokenDB)
   if (refreshUtils.verifyExpiration(refreshTokenDB[0])) {
     await DB.Refresh.destroy({ where: { id: refreshTokenDB[0].id } });
     res.status(403).json({
