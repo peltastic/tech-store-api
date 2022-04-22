@@ -21,6 +21,10 @@ const Cart = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    total_price: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
     count: {
       type: DataTypes.INTEGER,
       allowNull: false,

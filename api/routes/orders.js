@@ -5,7 +5,7 @@ const isUserMiiddleware = require("../middleware/authJwt");
 
 router.post(
   "/create",
-  [isUserMiiddleware.verifyToken, isUserMiiddleware.isAdmin],
+  [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   orderController.create_orders
 );
 router.put(
@@ -13,5 +13,15 @@ router.put(
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isAdmin],
   orderController.confirm_order
 );
+router.get(
+    "/all",
+    [isUserMiiddleware.verifyToken, isUserMiiddleware.isAdmin],
+    orderController.get_all_orders
+)
+router.get(
+    "/user/orders/:userId",
+    [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
+    orderController.get_user_orders
+)
 
 module.exports = router;

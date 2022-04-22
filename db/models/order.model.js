@@ -28,10 +28,6 @@ const Order = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    product_brand: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
     is_completed: {
       type: DataTypes.BOOLEAN,
       allowNull: false
