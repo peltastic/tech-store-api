@@ -12,7 +12,7 @@ const dbConfig = require("../config/db");
 const sequelize = new Sequelize(
   dbConfig.DB_NAME || "database",
   dbConfig.DB_DRIVER || "postgres",
-  dbConfig.DB_PASSWORD || "passwoed",
+  dbConfig.DB_PASSWORD || "password",
   {
     host: dbConfig.DB_HOST ||  "localhost",
     dialect: "postgres",
