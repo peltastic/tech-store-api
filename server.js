@@ -10,9 +10,7 @@ const orderRoutes = require('./api/routes/orders')
 const checkoutRoutes = require('./api/routes/checkout')
 dotenv.config()
 const DB = require('./db')
-app.use(cors({
-    origin: "http://localhost:3000",
-}))
+app.use(cors())
 
 DB.init()
 app.use(bodyparser.json());
