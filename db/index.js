@@ -8,7 +8,6 @@ const OrderModels = require("./models/order.model")
 const CartModels = require("./models/cart.model")
 const CheckoutModels = require("./models/checkout.model")
 const dbConfig = require("../config/db");
-const db = require('../config/db');
 
 const sequelize = new Sequelize(
   dbConfig.DB_NAME || "database",
