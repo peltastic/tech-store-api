@@ -11,8 +11,7 @@ const checkoutRoutes = require("./api/routes/checkout");
 dotenv.config();
 const DB = require("./db");
 app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.setHeader()
+  res.setHeader("Access-Control-Allow-Origin", "*")
   next();
 });
 
