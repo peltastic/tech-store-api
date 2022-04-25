@@ -18,7 +18,7 @@ router.put(
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   cartController.decrease_cart_count
 );
-router.put(
+router.delete(
   "/delete/:cartId",
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   cartController.delete_cart

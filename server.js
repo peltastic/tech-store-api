@@ -1,12 +1,14 @@
 const express = require('express')
 const app = express()
 const cors = require("cors")
+const dotenv = require('dotenv')
 const bodyparser = require('body-parser');
 const authRoutes = require('./api/routes/auth')
 const cartRoutes = require('./api/routes/carts')
 const productsRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
 const checkoutRoutes = require('./api/routes/checkout')
+dotenv.config()
 const DB = require('./db')
 app.use(cors({
     origin: "http://localhost:3000"
@@ -22,4 +24,4 @@ app.use('/cart', cartRoutes)
 app.use('/order', orderRoutes)
 app.use('/checkout', checkoutRoutes)
 
-app.listen(8000, () => console.log('server is running'))
+app.listen(process.env.PORT ||8000, () => console.log('server is running'))

@@ -9,7 +9,7 @@ async function generateJwt(email, userId) {
         const token = await jwt.sign(payload, authConfig.JWT_SECRET, {expiresIn: authConfig.JWT_EXPIRATION})
         return {error: false, token: token}
     } catch(error){
-        return {error: true}
+        return {error: error}
     }
 }
 

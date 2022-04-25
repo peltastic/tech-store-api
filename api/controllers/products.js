@@ -67,7 +67,6 @@ async function executeQuery(table, type) {
       type: QueryTypes.SELECT,
     }
   );
-  console.log(products);
   return products;
 }
 module.exports = { add_product, get_products };

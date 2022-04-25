@@ -3,7 +3,9 @@ const { QueryTypes } = require("sequelize");
 
 const get_checkout = async (req, res) => {
   const userId = req.params.userId;
-  console.log(userId);
+  if(!userId){
+    return res.sendStatus(400)
+  }
   try {
     const getCartPrices = await DB.sequelize.query(
       `SELECT total_price FROM carts where user_id = ?`,
@@ -12,15 +14,11 @@ const get_checkout = async (req, res) => {
         type: QueryTypes.SELECT,
       }
     );
-    console.log(getCartPrices);
     let totalPrice = 0;
-    console.log(totalPrice);
     for (const price of getCartPrices) {
       totalPrice += price.total_price;
-      // console.log(totalPrice)
     }
     const is_checkout_query = await checkoutQuery(userId);
-    console.log(is_checkout_query.length === 0)
     if (is_checkout_query.length > 0) {
       await DB.Checkout.update(
         { checkout: totalPrice },

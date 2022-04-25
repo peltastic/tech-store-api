@@ -10,9 +10,8 @@ const Refresh = (sequelize, DataTypes)   => {
     token: {
       type: DataTypes.STRING,
     },
-  
     expiry_date: {
-      type: DataTypes.DATE,
+      type: DataTypes.BIGINT,
     },
   })
   return refresh

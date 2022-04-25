@@ -4,7 +4,6 @@ const { QueryTypes } = require("sequelize");
 const { v4 } = require("uuid");
 const create_orders = async (req, res) => {
   const { username, address, userId } = req.body;
-  console.log(req.body);
   try {
     const orders = await DB.sequelize.query(
       `SELECT * FROM carts WHERE user_id = ?`,
@@ -13,10 +12,7 @@ const create_orders = async (req, res) => {
         type: QueryTypes.SELECT,
       }
     );
-    // console.log(orders)
     for (const order of orders) {
-      console.log(order);
-
       const id = v4();
       await DB.Order.create({
         order_id: id,

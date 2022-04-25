@@ -1,15 +1,17 @@
 const { QueryTypes } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../../config/auth");
-const sequelizeInstance = require("../../db")
+const sequelizeInstance = require("../../db");
 
-const {TokenExpiredError} = jwt;
+const { TokenExpiredError } = jwt;
 const catchTokenExpiredError = (err, res) => {
   if (err instanceof TokenExpiredError) {
-    return res.status(401).send({message: "Unauthorized ! Access Token was Expired"})
+    return res
+      .status(401)
+      .send({ message: "Unauthorized ! Access Token was Expired" });
   }
-  return res.status(401).send({message: "Unauthorized!"})
-}
+  return res.status(401).send({ message: "Unauthorized!" });
+};
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -23,7 +25,7 @@ const verifyToken = (req, res, next) => {
   }
   jwt.verify(token, authConfig.JWT_SECRET, (err, decoded) => {
     if (err) {
-     return catchTokenExpiredError(err, res)
+      return catchTokenExpiredError(err, res);
     }
     req.userID = decoded.id;
     next();
@@ -31,48 +33,63 @@ const verifyToken = (req, res, next) => {
 };
 
 const isUser = async (req, res, next) => {
-    const {userId} = req.body
-    if (!userId) {
-        return res.sendStatus(403)
-    }
+  let userId;
+  userId = req.body.userId;
+  if (!userId) {
+    userId = req.params.userId;
+  }
+  if (!userId) {
+    return res.sendStatus(403);
+  }
+  try {
     const user_role = await sequelizeInstance.sequelize.query(
-        "SELECT user_role FROM users WHERE user_id = ?",
-        {
-            replacements: [userId],
-            type: QueryTypes.SELECT,
-        }
-    )
-    const role = user_role[0]
+      "SELECT user_role FROM users WHERE user_id = ?",
+      {
+        replacements: [userId],
+        type: QueryTypes.SELECT,
+      }
+    );
+    const role = user_role[0];
     if (role === 9000 || 5180) {
-        next();
-        return
+      next();
+      return;
     }
-    return res.status(403).send({
-        message: "Require User Role"
-    })
-
-} 
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+  return res.status(403).send({
+    message: "Require User Role",
+  });
+};
 
 const isAdmin = async (req, res, next) => {
-    const {userId} = req.body
-    if (!userId) {
-        return res.sendStatus(403)
-    }
-    const user_role  = await sequelizeInstance.sequelize.query(
-        "SELECT user_role FROM users WHERE user_id = ?",
-        {
-            replacements: [userId],
-            type: QueryTypes.SELECT,
-        }
-    )
-    const role = user_role[0]
+  let userId;
+  userId = req.body.userId;
+  if (!userId) {
+    userId = req.params.userId;
+  }
+  if (!userId) {
+    return res.sendStatus(403);
+  }
+  try {
+    const user_role = await sequelizeInstance.sequelize.query(
+      "SELECT user_role FROM users WHERE user_id = ?",
+      {
+        replacements: [userId],
+        type: QueryTypes.SELECT,
+      }
+    );
+    const role = user_role[0];
     if (role.user_role === 5180) {
-        next();
-        return
+      next();
+      return;
     }
-    return res.status(403).send({
-        message: "Require Admin Role!"
-    })
-} 
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+  return res.status(403).send({
+    message: "Require Admin Role!",
+  });
+};
 
 module.exports = { verifyToken, isUser, isAdmin };

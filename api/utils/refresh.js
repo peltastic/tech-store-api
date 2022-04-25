@@ -5,11 +5,12 @@ const {v4} = require('uuid')
 const createToken = async function (user) {
     let expireAt = new Date();
     expireAt.setSeconds(expireAt.getSeconds() + authConfig.JWT_REFRESH_EXPIRATION)
+    const exp_date = expireAt.getTime()
     const refreshtoken = v4()
     const refreshTokenDB = await Models.Refresh.create({
         token: refreshtoken,
         id: user.user_id,
-        expiry_date: expireAt.getTime(),
+        expiry_date: exp_date,
     })
     return refreshTokenDB.token
 }

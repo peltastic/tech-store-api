@@ -1,3 +1,4 @@
+require('pg').defaults.parseInt8 = true
 const { Sequelize, DataTypes } = require("sequelize");
 const UserModels = require("./models/user.model");
 const RefreshModels = require("./models/refresh.model");
@@ -7,13 +8,14 @@ const OrderModels = require("./models/order.model")
 const CartModels = require("./models/cart.model")
 const CheckoutModels = require("./models/checkout.model")
 const dbConfig = require("../config/db");
+const db = require('../config/db');
 
 const sequelize = new Sequelize(
-  dbConfig.DB_NAME,
-  dbConfig.DB_DRIVER,
-  dbConfig.DB_PASSWORD,
+  dbConfig.DB_NAME || "database",
+  dbConfig.DB_DRIVER || "postgres",
+  dbConfig.DB_PASSWORD || "passwoed",
   {
-    host: "localhost",
+    host: dbConfig.DB_HOST ||  "localhost",
     dialect: "postgres",
   }
 );
