@@ -19,7 +19,10 @@ const dbConfig = require("../config/db");
 //   }
 // );
 // const sequelize = new Sequelize(`postgres://jwykqfvazbcmxj:9897583af8903ce13384f81ab9330e1d649a18b216b3ae0a3ef1012ca30721ac@ec2-54-80-123-146.compute-1.amazonaws.com:5432/d9ss53lp6vtpnu`);
-const sequelize = new Sequelize("postgres://jwykqfvazbcmxj:9897583af8903ce13384f81ab9330e1d649a18b216b3ae0a3ef1012ca30721ac@ec2-54-80-123-146.compute-1.amazonaws.com:5432/d9ss53lp6vtpnu");
+const sequelize = new Sequelize("postgres://jwykqfvazbcmxj:9897583af8903ce13384f81ab9330e1d649a18b216b3ae0a3ef1012ca30721ac@ec2-54-80-123-146.compute-1.amazonaws.com:5432/d9ss53lp6vtpnu",
+{
+  ssl: true
+});
 // const sequelize = new Sequelize(`postgres://postgres:pex3123@localhost:5432/tech_store`);
 const User = UserModels.User(sequelize, DataTypes);
 const Refresh = RefreshModels.Refresh(sequelize, DataTypes);
