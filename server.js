@@ -21,5 +21,8 @@ app.use('/products', productsRoutes)
 app.use('/cart', cartRoutes)
 app.use('/order', orderRoutes)
 app.use('/checkout', checkoutRoutes)
+app.get('/test', function(req, res){
+    res.status(200).json({message: "testing!!!!"})
+})
 
 app.listen(process.env.PORT ||8000, () => console.log('server is running'))
