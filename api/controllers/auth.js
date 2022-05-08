@@ -95,11 +95,13 @@ const login_user = async (req, res) => {
 const is_logged_in = async (req, res, next) => {
   res.status(200).send({
     message: "user logged in can see user content",
+    result: true,
   });
 };
 const is_logged_in_admin = async (req, res, next) => {
   res.status(200).send({
     message: "admin logged in can see admin content",
+    result: true,
   });
 };
 
