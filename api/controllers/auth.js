@@ -9,7 +9,7 @@ const { QueryTypes } = require("sequelize");
 const sign_user_up = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
-    return res.statis(400).json({ error: "Enter Required Fields" });
+    return res.status(400).json({ error: "Enter Required Fields" });
   }
   if (password.length < 6) {
     return res.status(400).json({ error: "Password too short" });
