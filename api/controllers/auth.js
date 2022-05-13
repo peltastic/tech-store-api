@@ -8,9 +8,9 @@ const { QueryTypes } = require("sequelize");
 
 const sign_user_up = async (req, res) => {
   const { name, email, password } = req.body;
-  console.log(req.body)
+  console.log(req.body);
   if (!name || !email || !password) {
-    console.log(name, email, password)
+    console.log(name, email, password);
     return res.status(400).json({ error: "Enter Required Fields" });
   }
   if (password.length < 6) {
@@ -36,7 +36,7 @@ const sign_user_up = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ error: err, message: "shhshsh" });
   }
-  return res.status(200).json(user);
+  return res.status(200).json("success");
 };
 
 const login_user = async (req, res) => {
@@ -74,7 +74,19 @@ const login_user = async (req, res) => {
       user_data[0].email,
       user_data[0].user_id
     );
-    refreshToken = await refreshUtils.createToken(user_data[0]);
+
+    const isRefresh = await DB.sequelize.query(
+      "SELECT id, token FROM refreshes where id = ?",
+      {
+        replacements: [user_data[0].user_id],
+        type: QueryTypes.SELECT,
+      }
+    );
+    if (!isRefresh) {
+      refreshToken = await refreshUtils.createToken(user_data[0]);
+    } else {
+      refreshToken = isRefresh[0].token;
+    }
 
     if (generate_token.error) {
       return res.status(400).send({
@@ -85,10 +97,6 @@ const login_user = async (req, res) => {
     return res.status(400).json({ error: err });
   }
   return res.status(200).send({
-    id: user_data[0].user_id,
-    username: user_data[0].user_name,
-    email: user_data[0].email,
-    role: user_data[0].user_role,
     accessToken: generate_token.token,
     refreshToken: refreshToken,
   });
