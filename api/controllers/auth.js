@@ -34,7 +34,7 @@ const sign_user_up = async (req, res) => {
       user_role: roles.Roles["User"],
     });
   } catch (err) {
-    return res.status(400).json({ error: err, message: "shhshsh" });
+    return res.status(400).json({ error: err });
   }
   return res.status(200).json("success");
 };
@@ -102,19 +102,26 @@ const login_user = async (req, res) => {
   });
 };
 
-const is_logged_in = async (req, res, next) => {
-  res.status(200).send({
-    message: "user logged in can see user content",
-    result: true,
-  });
+const user = async (req, res) => {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.sendStatus(400);
+  }
+  const decoded = await jwtToken.verifyJwt(token);
+  if (decoded.error) {
+    return res.status(400).json({ error: decoded.error });
+  }
+  const userId = decoded.decoded.id
+  const userinfo = await DB.sequelize.query(
+    "SELECT email, user_name, user_role, user_id from users WHERE user_id = ?",
+    {
+      replacements: [userId],
+      type: QueryTypes.SELECT
+    } 
+  )
+  res.status(200).send(userinfo[0]);
 };
-const is_logged_in_admin = async (req, res, next) => {
-  res.status(200).send({
-    message: "admin logged in can see admin content",
-    result: true,
-  });
-};
-
 const refreshToken = async (req, res) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
@@ -175,8 +182,7 @@ const logout = async (req, res) => {
 module.exports = {
   sign_user_up,
   login_user,
-  is_logged_in,
-  is_logged_in_admin,
+  user,
   refreshToken,
   logout,
 };

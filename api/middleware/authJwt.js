@@ -2,6 +2,7 @@ const { QueryTypes } = require("sequelize");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../../config/auth");
 const sequelizeInstance = require("../../db");
+const { verifyJwt } = require("../utils/generateJwt");
 
 const { TokenExpiredError } = jwt;
 const catchTokenExpiredError = (err, res) => {
@@ -33,14 +34,14 @@ const verifyToken = (req, res, next) => {
 };
 
 const isUser = async (req, res, next) => {
-  let userId;
-  userId = req.body.userId;
-  if (!userId) {
-    userId = req.params.userId;
-  }
-  if (!userId) {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  if (!token) {
     return res.sendStatus(403);
   }
+  const payload = await verifyJwt(token);
+  const userId = payload.decoded.id;
+
   try {
     const user_role = await sequelizeInstance.sequelize.query(
       "SELECT user_role FROM users WHERE user_id = ?",
@@ -63,14 +64,13 @@ const isUser = async (req, res, next) => {
 };
 
 const isAdmin = async (req, res, next) => {
-  let userId;
-  userId = req.body.userId;
-  if (!userId) {
-    userId = req.params.userId;
-  }
-  if (!userId) {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  const token = authHeader.split(" ")[1];
+  if (!token) {
     return res.sendStatus(403);
   }
+  const payload = await verifyJwt(token);
+  const userId = payload.decoded.id;
   try {
     const user_role = await sequelizeInstance.sequelize.query(
       "SELECT user_role FROM users WHERE user_id = ?",
