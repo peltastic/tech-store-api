@@ -98,13 +98,13 @@ const login_user = async (req, res) => {
     return res.status(400).json({ error: err });
   }
   return res
-    .cookie("token", generate_token.token, {
-      httpOnly: true,
-      sameSite: "none",
-      secure: false,
+    .cookie("token", generate_token.token, 
+      // httpOnly: true,
+      // sameSite: "none",
+      // secure: false,
       // expires: new Date(Date.now() + 3600000),
       // domain: "http://localhost:3000",
-    })
+    )
     .status(200)
     .json({ message: "done" });
 };
