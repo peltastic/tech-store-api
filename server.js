@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const cors = require("cors")
-app.use(cors({credentials: true, origin: true}))
 const dotenv = require('dotenv')
 const cookieParser = require('cookie-parser');
 const bodyparser = require('body-parser');
@@ -17,6 +16,7 @@ DB.init()
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
 app.use(cookieParser());
+app.use(cors({credentials: true, origin: true}))
 
 app.use('/auth', authRoutes)
 app.use('/products', productsRoutes)
