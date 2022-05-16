@@ -97,17 +97,16 @@ const login_user = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ error: err });
   }
-  return res.status(200).cookie(
-    "token",
-    { accessToken: generate_token.token, refreshToken: refreshToken },
-    {
+  return res
+    .status(200)
+    .cookie("token", generate_token, {
       httpOnly: true,
       secure: false,
       expires: new Date(Date.now() + 3600000),
       domain: "http://localhost:3000",
-      path: "/login"
-    }
-  ).json({ message: "done" })
+      path: "/login",
+    })
+    .json({ message: "done" });
 };
 
 const user = async (req, res) => {
