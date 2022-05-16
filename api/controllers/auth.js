@@ -104,7 +104,8 @@ const login_user = async (req, res) => {
       httpOnly: true,
       secure: false,
       expires: new Date(Date.now() + 3600000),
-      domain: "http://localhost:3000"
+      domain: "http://localhost:3000",
+      path: "/login"
     }
   ).json({ message: "done" })
 };
