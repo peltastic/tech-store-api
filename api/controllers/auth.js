@@ -103,7 +103,8 @@ const login_user = async (req, res) => {
     {
       httpOnly: true,
       secure: false,
-      expires: new Date(Date.now() + authConfig.JWT_EXPIRATION_MS),
+      expires: new Date(Date.now() + 3600000),
+      domain: "http://localhost:3000"
     }
   ).json({ message: "done" })
 };
