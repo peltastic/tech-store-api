@@ -3,6 +3,7 @@ const app = express()
 const cors = require("cors")
 app.use(cors())
 const dotenv = require('dotenv')
+const cookieParser = require('cookie-parser');
 const bodyparser = require('body-parser');
 const authRoutes = require('./api/routes/auth')
 const cartRoutes = require('./api/routes/carts')
@@ -15,6 +16,7 @@ const DB = require('./db')
 DB.init()
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({extended: true}));
+app.use(cookieParser());
 
 app.use('/auth', authRoutes)
 app.use('/products', productsRoutes)
