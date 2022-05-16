@@ -5,6 +5,7 @@ const jwtToken = require("../utils/generateJwt");
 const refreshUtils = require("../utils/refresh");
 const { v4 } = require("uuid");
 const { QueryTypes } = require("sequelize");
+const authConfig = require("../../config/auth");
 
 const sign_user_up = async (req, res) => {
   const { name, email, password } = req.body;
@@ -96,10 +97,15 @@ const login_user = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ error: err });
   }
-  return res.status(200).send({
-    accessToken: generate_token.token,
-    refreshToken: refreshToken,
-  });
+  return res.status(200).cookie(
+    "token",
+    { accessToken: generate_token.token, refreshToken: refreshToken },
+    {
+      httpOnly: true,
+      secure: false,
+      expires: new Date(Date.now() + authConfig.JWT_EXPIRATION_MS),
+    }
+  ).json({ message: "done" })
 };
 
 const user = async (req, res) => {
@@ -112,14 +118,14 @@ const user = async (req, res) => {
   if (decoded.error) {
     return res.status(400).json({ error: decoded.error });
   }
-  const userId = decoded.decoded.id
+  const userId = decoded.decoded.id;
   const userinfo = await DB.sequelize.query(
     "SELECT email, user_name, user_role, user_id from users WHERE user_id = ?",
     {
       replacements: [userId],
-      type: QueryTypes.SELECT
-    } 
-  )
+      type: QueryTypes.SELECT,
+    }
+  );
   res.status(200).send(userinfo[0]);
 };
 const refreshToken = async (req, res) => {
