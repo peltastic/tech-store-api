@@ -97,11 +97,11 @@ const login_user = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ error: err });
   }
-  res.cookie("token", generate_token, {
+  res.cookie("token", generate_token.token, {
     httpOnly: true,
-    secure: false,
-    expires: new Date(Date.now() + 3600000),
-    domain: "http://localhost:3000",
+    // secure: false,
+    // expires: new Date(Date.now() + 3600000),
+    // domain: "http://localhost:3000",
   })
   return res
     .status(200)
