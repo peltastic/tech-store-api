@@ -101,7 +101,7 @@ const login_user = async (req, res) => {
     .cookie("token", generate_token.token, {
       httpOnly: true,
       sameSite: "none",
-      // secure: false,
+      secure: false,
       // expires: new Date(Date.now() + 3600000),
       // domain: "http://localhost:3000",
     })
