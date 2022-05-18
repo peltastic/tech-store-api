@@ -59,7 +59,7 @@ const get_products = async (req, res) => {
   } else if (type === "regular" && category === "laptops") {
     products = await executeQuery(category, type, "product_type");
   }
-  return res.status(200).send({ data: products });
+  return res.status(200).json({ data: products });
 };
 const get_product = async (req, res) => {
   const table = req.params.table;
@@ -68,7 +68,7 @@ const get_product = async (req, res) => {
     return res.sendStatus(400);
   }
   const product = await executeQuery(table, productId, "product_id");
-  return res.status(200).send({ data: product[0] });
+  return res.status(200).json({ data: product });
 };
 async function executeQuery(table, type, column) {
   const products = await DB.sequelize.query(
