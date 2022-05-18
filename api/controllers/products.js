@@ -51,13 +51,13 @@ const get_products = async (req, res) => {
   }
   let products;
   if (type === "gaming" && category === "phones") {
-    products = await executeQuery(category, type);
+    products = await executeQuery(category, type, "product_type");
   } else if (type === "regular" && category === "phones") {
     products = await executeQuery(category, type);
   } else if (type === "gaming" && category === "laptops") {
-    products = await executeQuery(category, type);
+    products = await executeQuery(category, type, "product_type");
   } else if (type === "regular" && category === "laptops") {
-    products = await executeQuery(category, type);
+    products = await executeQuery(category, type, "product_type");
   }
   return res.status(200).send({ data: products });
 };
@@ -67,12 +67,12 @@ const get_product = async (req, res) => {
   if (!table || !productId) {
     return res.sendStatus(400);
   }
-  const product = await executeQuery(table, productId);
+  const product = await executeQuery(table, productId, "product_id");
   return res.status(200).send({ data: product[0] });
 };
-async function executeQuery(table, type) {
+async function executeQuery(table, type, column) {
   const products = await DB.sequelize.query(
-    `SELECT * FROM ${table} WHERE product_type = ?`,
+    `SELECT * FROM ${table} WHERE ${column} = ?`,
     {
       replacements: [type],
       type: QueryTypes.SELECT,
