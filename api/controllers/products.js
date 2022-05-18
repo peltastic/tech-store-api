@@ -46,6 +46,9 @@ const add_product = async (req, res) => {
 const get_products = async (req, res) => {
   const type = req.params.type;
   const category = req.params.category;
+  if (!type || !category) {
+    return res.sendStatus(400);
+  }
   let products;
   if (type === "gaming" && category === "phones") {
     products = await executeQuery(category, type);
@@ -56,8 +59,16 @@ const get_products = async (req, res) => {
   } else if (type === "regular" && category === "laptops") {
     products = await executeQuery(category, type);
   }
-
   return res.status(200).send({ data: products });
+};
+const get_product = async (req, res) => {
+  const table = req.params.table;
+  const productId = req.params.id;
+  if (!table || !productId) {
+    return res.sendStatus(400);
+  }
+  const product = await executeQuery(table, productId);
+  return res.status(200).send({ data: product[0] });
 };
 async function executeQuery(table, type) {
   const products = await DB.sequelize.query(
@@ -69,4 +80,4 @@ async function executeQuery(table, type) {
   );
   return products;
 }
-module.exports = { add_product, get_products };
+module.exports = { add_product, get_products, get_product };
