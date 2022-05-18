@@ -2,7 +2,6 @@ const bcrypt = require("bcrypt");
 const roles = require("../../config/roles");
 const DB = require("../../db");
 const jwtToken = require("../utils/generateJwt");
-const refreshUtils = require("../utils/refresh");
 const { v4 } = require("uuid");
 const { QueryTypes } = require("sequelize");
 
@@ -49,7 +48,6 @@ const login_user = async (req, res) => {
     return res.status(400).json({ error: "Password too short" });
   }
   let user_data;
-  let refreshToken;
   let generate_token;
 
   try {
@@ -75,19 +73,6 @@ const login_user = async (req, res) => {
       user_data[0].user_id
     );
 
-    const isRefresh = await DB.sequelize.query(
-      "SELECT id, token FROM refreshes where id = ?",
-      {
-        replacements: [user_data[0].user_id],
-        type: QueryTypes.SELECT,
-      }
-    );
-    if (!isRefresh) {
-      refreshToken = await refreshUtils.createToken(user_data[0]);
-    } else {
-      refreshToken = isRefresh[0].token;
-    }
-
     if (generate_token.error) {
       return res.status(400).send({
         message: "unable to generate access token",
@@ -96,10 +81,7 @@ const login_user = async (req, res) => {
   } catch (err) {
     return res.status(400).json({ error: err });
   }
-  return res
-
-    .status(200)
-    .json({ accessToken: generate_token.token, refreshToken: refreshToken });
+  return res.status(200).json({ accessToken: generate_token.token });
 };
 
 const user = async (req, res) => {
@@ -122,51 +104,6 @@ const user = async (req, res) => {
   );
   res.status(200).send(userinfo[0]);
 };
-const refreshToken = async (req, res) => {
-  const { refreshToken } = req.body;
-  if (!refreshToken) {
-    return res.status(403).json({ message: "Refresh Token is Required" });
-  }
-  let refreshTokenDB;
-  let user;
-  try {
-    refreshTokenDB = await DB.sequelize.query(
-      "SELECT * FROM refreshes WHERE token = ?",
-      {
-        replacements: [refreshToken],
-        type: QueryTypes.SELECT,
-      }
-    );
-    if (!refreshTokenDB) {
-      res.status(403).json({ message: "Refresh token is not in database!" });
-      return;
-    }
-    if (refreshUtils.verifyExpiration(refreshTokenDB[0])) {
-      await DB.Refresh.destroy({ where: { id: refreshTokenDB[0].id } });
-      res.status(403).json({
-        message: "Refresh token was expired. Please make a new signin request",
-      });
-      return;
-    }
-    user = await DB.sequelize.query("SELECT * FROM users WHERE user_id = ?", {
-      replacements: [refreshTokenDB[0].id],
-      type: QueryTypes.SELECT,
-    });
-  } catch (err) {
-    return res.status(400).json({ error: err, message: "shhshsh" });
-  }
-  let { error, token } = await jwtToken.generateJwt(
-    user[0].email,
-    user[0].user_id
-  );
-  if (error) {
-    return res.send(400).json(error, "refresh failed");
-  }
-  return res.status(200).json({
-    accessToken: token,
-    refreshToken: refreshTokenDB[0].token,
-  });
-};
 
 const logout = async (req, res) => {
   const { userId } = req.body;
@@ -183,6 +120,5 @@ module.exports = {
   sign_user_up,
   login_user,
   user,
-  refreshToken,
   logout,
 };
