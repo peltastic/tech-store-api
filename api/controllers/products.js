@@ -67,7 +67,8 @@ const get_product = async (req, res) => {
   if (!table || !productId) {
     return res.sendStatus(400);
   }
-  const product = await executeQuery(table, productId, "product_id");
+  const productQuery = await executeQuery(table, productId, "product_id");
+  const product = productQuery
   return res.status(200).json({ data: product });
 };
 async function executeQuery(table, type, column) {
