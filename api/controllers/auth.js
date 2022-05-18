@@ -5,7 +5,6 @@ const jwtToken = require("../utils/generateJwt");
 const refreshUtils = require("../utils/refresh");
 const { v4 } = require("uuid");
 const { QueryTypes } = require("sequelize");
-const authConfig = require("../../config/auth");
 
 const sign_user_up = async (req, res) => {
   const { name, email, password } = req.body;
