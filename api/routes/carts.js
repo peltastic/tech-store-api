@@ -9,12 +9,12 @@ router.post(
   cartController.create_cart
 );
 router.put(
-  "/update/increase/:cartId",
+  "/update/increase/:userId/:productId",
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   cartController.increase_cart_count
 );
 router.put(
-  "/update/decrease/:cartId",
+  "/update/decrease/:userId/:productId",
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   cartController.decrease_cart_count
 );

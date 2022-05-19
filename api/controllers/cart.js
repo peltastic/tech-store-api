@@ -35,12 +35,13 @@ const create_cart = async (req, res) => {
   return res.sendStatus(200);
 };
 const increase_cart_count = async (req, res) => {
-  const cartId = req.params.cartId;
-  if (!cartId) {
+  const productId = req.params.productId;
+  const userId = req.params.userId
+  if (!productId || userId ) {
     return res.sendStatus(400);
   }
   try {
-    const count = await getCount(cartId);
+    const count = await getCount(userId, productId);
     const update = count[0].count + 1;
     const price = count[0].price;
     const totalPrice = update * price;
@@ -58,12 +59,13 @@ const increase_cart_count = async (req, res) => {
   return res.sendStatus(200);
 };
 const decrease_cart_count = async (req, res) => {
-  const cartId = req.params.cartId;
-  if (!cartId) {
+  const productId = req.params.productId;
+  const userId = req.params.userId
+  if (!productId || userId ) {
     return res.sendStatus(400);
   }
   try {
-    const count = await getCount(cartId);
+    const count = await getCount(userId, productId);
     const update = count[0].count - 1;
     const price = count[0].price;
     const totalPrice = update * price;
@@ -116,14 +118,10 @@ const delete_cart = async (req, res) => {
   }
 };
 
-async function getCount(cartId) {
-  const count = await DB.sequelize.query(
-    `SELECT count, price FROM carts WHERE cart_id = ?`,
-    {
-      replacements: [cartId],
-      type: QueryTypes.SELECT,
-    }
-  );
+async function getCount(userId, productId) {
+  const count = await DB.Cart.findOne({
+    where: { user_id: userId, product_id: productId },
+  });
   return count;
 }
 
