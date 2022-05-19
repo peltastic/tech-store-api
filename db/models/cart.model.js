@@ -37,6 +37,10 @@ const Cart = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
     },
+    category: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
   return cart;
 };

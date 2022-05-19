@@ -28,6 +28,7 @@ const create_cart = async (req, res) => {
       total_price: product.price,
       count: 1,
       order_completed: false,
+      category: product.category
     });
   } catch (err) {
     return res.status(400).json({ error: err });
