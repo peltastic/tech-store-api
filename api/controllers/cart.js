@@ -37,7 +37,7 @@ const create_cart = async (req, res) => {
 const increase_cart_count = async (req, res) => {
   const productId = req.params.productId;
   const userId = req.params.userId
-  if (!productId || userId ) {
+  if (!productId || !userId ) {
     return res.sendStatus(400);
   }
   try {
@@ -61,7 +61,7 @@ const increase_cart_count = async (req, res) => {
 const decrease_cart_count = async (req, res) => {
   const productId = req.params.productId;
   const userId = req.params.userId
-  if (!productId || userId ) {
+  if (!productId || !userId ) {
     return res.sendStatus(400);
   }
   try {
