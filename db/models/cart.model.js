@@ -9,6 +9,10 @@ const Cart = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    product_image: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     user_id: {
       type: DataTypes.UUID,
       allowNull: false,
