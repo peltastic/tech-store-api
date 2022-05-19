@@ -71,6 +71,14 @@ const decrease_cart_count = async (req, res) => {
     const update = count[0].count - 1;
     const price = count[0].price;
     const totalPrice = update * price;
+    if (totalPrice === 0) {
+      await DB.Cart.destroy({
+        where: {
+          cart_id: count[0].cart_id
+        },
+      });
+      return res.sendStatus(200)
+    }
 
     await DB.Cart.update(
       { count: update, total_price: totalPrice },
