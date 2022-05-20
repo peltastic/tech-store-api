@@ -28,5 +28,10 @@ router.get(
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   cartController.get_user_cart
 );
+router.get(
+  "checkCart/:userId/:productId",
+  [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
+  cartController.check_cart
+)
 
 module.exports = router;

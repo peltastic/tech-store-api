@@ -28,7 +28,7 @@ const create_cart = async (req, res) => {
       total_price: product.price,
       count: 1,
       order_completed: false,
-      category: product.category
+      category: product.category,
     });
   } catch (err) {
     return res.status(400).json({ error: err });
@@ -37,11 +37,11 @@ const create_cart = async (req, res) => {
 };
 const increase_cart_count = async (req, res) => {
   const productId = req.params.productId;
-  const userId = req.params.userId
-  if (!productId || !userId ) {
+  const userId = req.params.userId;
+  if (!productId || !userId) {
     return res.sendStatus(400);
   }
-  // try {
+  try {
     const count = await getCount(userId, productId);
     const update = count[0].count + 1;
     const price = count[0].price;
@@ -54,31 +54,30 @@ const increase_cart_count = async (req, res) => {
         },
       }
     );
-  // } 
-  // catch (err) {
-  //   return res.status(400).json({ error: err });
-  // }
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
   return res.sendStatus(200);
 };
 const decrease_cart_count = async (req, res) => {
   const productId = req.params.productId;
-  const userId = req.params.userId
-  if (!productId || !userId ) {
+  const userId = req.params.userId;
+  if (!productId || !userId) {
     return res.sendStatus(400);
   }
   try {
     const count = await getCount(userId, productId);
-    console.log(count)
+    console.log(count);
     const update = count[0].count - 1;
     const price = count[0].price;
     const totalPrice = update * price;
     if (totalPrice === 0) {
       await DB.Cart.destroy({
         where: {
-          cart_id: count[0].cart_id
+          cart_id: count[0].cart_id,
         },
       });
-      return res.sendStatus(200)
+      return res.sendStatus(200);
     }
 
     await DB.Cart.update(
@@ -129,19 +128,40 @@ const delete_cart = async (req, res) => {
   }
 };
 
-async function getCount(userId, productId) {
-  // try{
+const check_cart = async (req, res) => {
+  const productId = req.params.productId;
+  const userId = req.params.userId;
+  if (!productId || !userId) {
+    return res.sendStatus(400);
+  }
+  try {
+    const productQuery = await DB.sequelize.query(
+      `SELECT total_price FROM carts WHERE user_id = ? AND product_id = ?`,
+      {
+        replacements: [userId, productId],
+        type: QueryTypes.SELECT,
+      }
+    );
+    const product = productQuery[0];
+    return res.status(200).json(product);
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
+};
 
-    const count = await  DB.sequelize.query(
+async function getCount(userId, productId) {
+  try {
+    const count = await DB.sequelize.query(
       "SELECT * FROM carts WHERE user_id = ? AND product_id = ?",
       {
         replacements: [userId, productId],
         type: QueryTypes.SELECT,
-      })
+      }
+    );
     return count;
-  // } catch (err) {
-  //   return res.status(400).json({ error: err });
-  // }
+  } catch (err) {
+    return res.status(400).json({ error: err });
+  }
 }
 
 module.exports = {
@@ -150,4 +170,5 @@ module.exports = {
   decrease_cart_count,
   get_user_cart,
   delete_cart,
+  check_cart
 };
