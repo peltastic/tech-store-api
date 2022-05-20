@@ -136,7 +136,7 @@ const check_cart = async (req, res) => {
   }
   try {
     const productQuery = await DB.sequelize.query(
-      `SELECT total_price, count FROM carts WHERE user_id = ? AND product_id = ?`,
+      `SELECT total_price, count, price FROM carts WHERE user_id = ? AND product_id = ?`,
       {
         replacements: [userId, productId],
         type: QueryTypes.SELECT,
