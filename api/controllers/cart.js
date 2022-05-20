@@ -134,6 +134,7 @@ const check_cart = async (req, res) => {
   if (!productId || !userId) {
     return res.sendStatus(400);
   }
+  let product
   try {
     const productQuery = await DB.sequelize.query(
       `SELECT total_price, count, price FROM carts WHERE user_id = ? AND product_id = ?`,
@@ -142,11 +143,11 @@ const check_cart = async (req, res) => {
         type: QueryTypes.SELECT,
       }
     );
-    const product = productQuery[0];
-    return res.status(200).json(product);
+    product = productQuery[0];
   } catch (err) {
     return res.status(400).json({ error: err });
   }
+  return res.status(200).json(product);
 };
 
 async function getCount(userId, productId) {
