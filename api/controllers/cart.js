@@ -11,7 +11,7 @@ const create_cart = async (req, res) => {
   const id = v4();
   try {
     const product_query = await DB.sequelize.query(
-      `SELECT name, product_id, price, product_image FROM ${category} where product_id = ?`,
+      `SELECT name, product_id, price, product_image, category FROM ${category} where product_id = ?`,
       {
         replacements: [productId],
         type: QueryTypes.SELECT,
@@ -136,7 +136,7 @@ const check_cart = async (req, res) => {
   }
   try {
     const productQuery = await DB.sequelize.query(
-      `SELECT total_price FROM carts WHERE user_id = ? AND product_id = ?`,
+      `SELECT total_price, count FROM carts WHERE user_id = ? AND product_id = ?`,
       {
         replacements: [userId, productId],
         type: QueryTypes.SELECT,
