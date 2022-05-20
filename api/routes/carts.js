@@ -29,7 +29,7 @@ router.get(
   cartController.get_user_cart
 );
 router.get(
-  "checkCart/:userId/:productId",
+  "/checkCart/:userId/:productId",
   [isUserMiiddleware.verifyToken, isUserMiiddleware.isUser],
   cartController.check_cart
 )
