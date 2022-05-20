@@ -143,7 +143,9 @@ const check_cart = async (req, res) => {
         type: QueryTypes.SELECT,
       }
     );
+    console.log(productQuery)
     product = productQuery[0];
+    console.log(product)
   } catch (err) {
     return res.status(400).json({ error: err });
   }

@@ -105,20 +105,8 @@ const user = async (req, res) => {
   res.status(200).send(userinfo[0]);
 };
 
-const logout = async (req, res) => {
-  const { userId } = req.body;
-  if (!userId) return res.sendStatus(403);
-  await DB.Refresh.destroy({
-    where: {
-      id: userId,
-    },
-  });
-  return res.sendStatus(200);
-};
-
 module.exports = {
   sign_user_up,
   login_user,
   user,
-  logout,
 };
