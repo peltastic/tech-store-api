@@ -31,6 +31,7 @@ const sign_user_up = async (req, res) => {
       password: hash,
       email: email,
       user_role: roles.Roles["User"],
+      cart_count: 0
     });
   } catch (err) {
     return res.status(400).json({ error: err });

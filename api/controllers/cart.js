@@ -11,7 +11,7 @@ const create_cart = async (req, res) => {
   const id = v4();
   try {
     const product_query = await DB.sequelize.query(
-      `SELECT name, product_id, product_type, price, product_image, category FROM ${category} where product_id = ?`,
+      `SELECT name, product_id, product_type, price, product_image, category FROM ${category} WHERE product_id = ?`,
       {
         replacements: [productId],
         type: QueryTypes.SELECT,
@@ -29,8 +29,25 @@ const create_cart = async (req, res) => {
       count: 1,
       order_completed: false,
       category: product.category,
-      type: product.product_type
+      type: product.product_type,
     });
+    const cartCount_query = await DB.sequelize.query(
+      `SELECT cart_count FROM users WHERE user_id = ?`,
+      {
+        replacements: [userId],
+        type: QueryTypes.SELECT,
+      }
+    );
+    const cart_count = cartCount_query[0].cart_count;
+    const update = cart_count + 1;
+    await DB.User(
+      { cart_count: update },
+      {
+        where: {
+          user_id: userId,
+        },
+      }
+    );
   } catch (err) {
     return res.status(400).json({ error: err });
   }
@@ -73,11 +90,7 @@ const decrease_cart_count = async (req, res) => {
     const price = count[0].price;
     const totalPrice = update * price;
     if (totalPrice === 0) {
-      await DB.Cart.destroy({
-        where: {
-          cart_id: count[0].cart_id,
-        },
-      });
+      delete_cart(count[0].cart_id, userId)
       return res.sendStatus(200);
     }
 
@@ -119,15 +132,36 @@ const delete_cart = async (req, res) => {
     return res.sendStatus(400);
   }
   try {
-    await DB.Cart.destroy({
-      where: {
-        cart_id: cartId,
-      },
-    });
+    const userId ="l"
+    destroyCart(cartId, userId)
   } catch (err) {
     return res.status(400).json({ error: err });
   }
 };
+
+const destroyCart = (cartId, userId) => {
+  await DB.Cart.destroy({
+    where: {
+      cart_id: cartId,
+    },
+  });
+  const cartCount_query = await DB.sequelize.query(
+    `SELECT cart_count FROM users WHERE user_id = ?`,
+    {
+      replacements: [userId],
+      type: QueryTypes.SELECT,
+    }
+  );
+  const cart_count = cartCount_query[0].cart_count;
+  const update = cart_count - 1;
+  await DB.User(
+    { cart_count: update },
+    {
+      where: {
+        user_id: userId,
+      },
+    })
+}
 
 const check_cart = async (req, res) => {
   const productId = req.params.productId;
@@ -135,7 +169,7 @@ const check_cart = async (req, res) => {
   if (!productId || !userId) {
     return res.sendStatus(400);
   }
-  let product
+  let product;
   try {
     const productQuery = await DB.sequelize.query(
       `SELECT total_price, count, price FROM carts WHERE user_id = ? AND product_id = ?`,
@@ -144,9 +178,9 @@ const check_cart = async (req, res) => {
         type: QueryTypes.SELECT,
       }
     );
-    console.log(productQuery)
+    console.log(productQuery);
     product = productQuery[0];
-    console.log(product)
+    console.log(product);
   } catch (err) {
     return res.status(400).json({ error: err });
   }
@@ -174,5 +208,5 @@ module.exports = {
   decrease_cart_count,
   get_user_cart,
   delete_cart,
-  check_cart
+  check_cart,
 };
