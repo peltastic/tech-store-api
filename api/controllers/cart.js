@@ -139,7 +139,7 @@ const delete_cart = async (req, res) => {
   }
 };
 
-const destroyCart = (cartId, userId) => {
+const destroyCart =async (cartId, userId) => {
   await DB.Cart.destroy({
     where: {
       cart_id: cartId,
