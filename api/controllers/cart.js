@@ -11,7 +11,7 @@ const create_cart = async (req, res) => {
   const id = v4();
   try {
     const product_query = await DB.sequelize.query(
-      `SELECT name, product_id, price, product_image, category FROM ${category} where product_id = ?`,
+      `SELECT name, product_id, product_type, price, product_image, category FROM ${category} where product_id = ?`,
       {
         replacements: [productId],
         type: QueryTypes.SELECT,
@@ -29,6 +29,7 @@ const create_cart = async (req, res) => {
       count: 1,
       order_completed: false,
       category: product.category,
+      type: product.product_type
     });
   } catch (err) {
     return res.status(400).json({ error: err });
