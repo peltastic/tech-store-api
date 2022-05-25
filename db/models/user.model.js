@@ -23,7 +23,7 @@ const User = (sequelize, DataTypes) => {
     },
     cart_count: {
       type: DataTypes.INTEGER,
-      allowNull: 0
+      allowNull: false
     }
   });
   return user
