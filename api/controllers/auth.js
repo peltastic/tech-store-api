@@ -97,7 +97,7 @@ const user = async (req, res) => {
   }
   const userId = decoded.decoded.id;
   const userinfo = await DB.sequelize.query(
-    "SELECT email, user_name, user_role, user_id from users WHERE user_id = ?",
+    "SELECT email, user_name, user_role, user_id, cart_count from users WHERE user_id = ?",
     {
       replacements: [userId],
       type: QueryTypes.SELECT,
