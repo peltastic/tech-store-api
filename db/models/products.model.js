@@ -1,5 +1,5 @@
-const Phones = (sequelize, DataTypes) => {
-    const phones = sequelize.define("phone", {
+const Products = (sequelize, DataTypes) => {
+    const products = sequelize.define("product", {
         name:{
             type: DataTypes.STRING,
             allowNull: false
@@ -33,8 +33,8 @@ const Phones = (sequelize, DataTypes) => {
             allowNull: false
         }
     })
-    return phones
+    return products
 }
 
 
-module.exports = {Phones}
+module.exports = {Products}

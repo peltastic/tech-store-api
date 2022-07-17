@@ -8,7 +8,7 @@ router.post(
   [rolesMiddleware.verifyToken, rolesMiddleware.isAdmin],
   productsController.add_product
 );
-router.get("/:category/:type", productsController.get_products);
-router.get("/product/:table/:id", productsController.get_product);
+router.get("/getproducts", productsController.get_products);
+router.get("/:id", productsController.get_product);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const DB = require("../../db");
-const { QueryTypes } = require("sequelize");
+const { QueryTypes, Op } = require("sequelize");
 
 const { v4 } = require("uuid");
 
@@ -14,72 +14,55 @@ const add_product = async (req, res) => {
     productImageFileUrl,
   } = req.body;
   const id = v4();
-  if (category === "phones") {
-    await DB.ProductPhones.create({
-      name: name,
-      price: price,
-      desc: desc,
-      category: category,
-      product_id: id,
-      product_type: productType,
-      product_image: productImageFileUrl,
-      product_brand: productBrand,
-    });
-  } else if (category === "laptops") {
-    await DB.ProductLaptops.create({
-      name: name,
-      price: price,
-      desc: desc,
-      category: category,
-      product_id: id,
-      product_type: productType,
-      product_image: productImageFileUrl,
-      product_brand: productBrand,
-    });
-  }
-  
+  await DB.Product.create({
+    name: name,
+    price: price,
+    desc: desc,
+    category: category,
+    product_id: id,
+    product_type: productType,
+    product_image: productImageFileUrl,
+    product_brand: productBrand,
+  });
+
   return res.status(200).send({
     message: "uploaded",
   });
 };
 
-const get_products = async (req, res) => {
-  const type = req.params.type;
-  const category = req.params.category;
-  if (!type || !category) {
+const get_product = async (req, res) => {
+  const id = req.params.id;
+  if (!id) {
     return res.sendStatus(400);
   }
-  let products;
-  if (type === "gaming" && category === "phones") {
-    products = await executeQuery(category, type, "product_type");
-  } else if (type === "regular" && category === "phones") {
-    products = await executeQuery(category, type, "product_type");
-  } else if (type === "gaming" && category === "laptops") {
-    products = await executeQuery(category, type, "product_type");
-  } else if (type === "regular" && category === "laptops") {
-    products = await executeQuery(category, type, "product_type");
-  }
+
+  const products = await DB.Product.findAll({
+    where: {
+      product_id: id,
+    },
+  });
   return res.status(200).json({ data: products });
 };
-const get_product = async (req, res) => {
-  const table = req.params.table;
-  const productId = req.params.id;
-  if (!table || !productId) {
-    return res.sendStatus(400);
-  }
-  const productQuery = await executeQuery(table, productId, "product_id");
-  const product = productQuery
-
-  return res.status(200).json({ data: product[0] });
-};
-async function executeQuery(table, type, column) {
-  const products = await DB.sequelize.query(
-    `SELECT * FROM ${table} WHERE ${column} = ?`,
-    {
-      replacements: [type],
+const get_products = async (req, res) => {
+  const category = req.query.category || null;
+  const type = req.query.type || null;
+  let products;
+  if (category || type) {
+    products = await executeSpecificQuery(category, type);
+  } else {
+    products = await DB.sequelize.query(`SELECT * FROM products`, {
       type: QueryTypes.SELECT,
-    }
-  );
+    });
+  }
+
+  return res.status(200).json({ data: products });
+};
+async function executeSpecificQuery(category, type) {
+  const products = await DB.Product.findAll({
+    where: {
+      [Op.or]: [{ category: category }, { product_type: type }],
+    },
+  });
   return products;
 }
 module.exports = { add_product, get_products, get_product };

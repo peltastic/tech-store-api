@@ -23,8 +23,11 @@ app.use('/products', productsRoutes)
 app.use('/cart', cartRoutes)
 app.use('/order', orderRoutes)
 app.use('/checkout', checkoutRoutes)
-app.get('/test', function(req, res){
+app.get('/test', function(_, res){
     res.status(200).json({message: "testissng!!!!"})
 })
 
-app.listen(process.env.PORT || 8000, () => console.log('server is running'))
+app.listen(
+    // process.env.PORT
+    //  || 
+     8000, () => console.log('server is running'))
