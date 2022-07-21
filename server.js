@@ -1,33 +1,34 @@
-const express = require('express')
-const app = express()
-const cors = require("cors")
-const dotenv = require('dotenv')
-const cookieParser = require('cookie-parser');
-const bodyparser = require('body-parser');
-const authRoutes = require('./api/routes/auth')
-const cartRoutes = require('./api/routes/carts')
-const productsRoutes = require('./api/routes/products')
-const orderRoutes = require('./api/routes/orders')
-const checkoutRoutes = require('./api/routes/checkout')
-dotenv.config()
-const DB = require('./db')
+const express = require("express");
+const app = express();
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const bodyparser = require("body-parser");
+const authRoutes = require("./api/routes/auth");
+const cartRoutes = require("./api/routes/carts");
+const productsRoutes = require("./api/routes/products");
+const orderRoutes = require("./api/routes/orders");
+const checkoutRoutes = require("./api/routes/checkout");
+dotenv.config();
+const DB = require("./db");
 
-DB.init()
+DB.init();
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({extended: true}));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors({credentials: true, origin: true}))
+app.use(cors({ credentials: true, origin: true }));
 
-app.use('/auth', authRoutes)
-app.use('/products', productsRoutes)
-app.use('/cart', cartRoutes)
-app.use('/order', orderRoutes)
-app.use('/checkout', checkoutRoutes)
-app.get('/test', function(_, res){
-    res.status(200).json({message: "testissng!!!!"})
-})
+app.use("/auth", authRoutes);
+app.use("/products", productsRoutes);
+app.use("/cart", cartRoutes);
+app.use("/order", orderRoutes);
+app.use("/checkout", checkoutRoutes);
+app.get("/test", function (_, res) {
+  res.status(200).json({ message: "testissng!!!!" });
+});
 
 app.listen(
-    // process.env.PORT
-    //  || 
-     8000, () => console.log('server is running'))
+  process.env.PORT,
+
+  () => console.log("server is running")
+);
