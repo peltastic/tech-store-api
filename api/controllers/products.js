@@ -40,27 +40,28 @@ const get_product = async (req, res) => {
     where: {
       product_id: id,
     },
-  });
+  }); 
   return res.status(200).json({ data: products });
 };
 const get_products = async (req, res) => {
-  const category = req.query.category || null;
-  const type = req.query.type || null;
+  const category = req.query.category || "";
+  const type = req.query.type || "";
+  const limit = req.query.limit || null;
   let products;
   if (category || type) {
     products = await executeSpecificQuery(category, type);
   } else {
-    products = await DB.sequelize.query(`SELECT * FROM products`, {
-      type: QueryTypes.SELECT,
-    });
+    products = await DB.Product.findAll({ limit: limit });
   }
 
   return res.status(200).json({ data: products });
 };
 async function executeSpecificQuery(category, type) {
+  const logic = category && type ? "and" : "or";
   const products = await DB.Product.findAll({
+    limit: 1,
     where: {
-      [Op.or]: [{ category: category }, { product_type: type }],
+      [Op[logic]]: [{ category: category }, { product_type: type }],
     },
   });
   return products;
