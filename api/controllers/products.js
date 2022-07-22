@@ -40,7 +40,7 @@ const get_product = async (req, res) => {
     where: {
       product_id: id,
     },
-  }); 
+  });
   return res.status(200).json({ data: products });
 };
 const get_products = async (req, res) => {
@@ -59,7 +59,6 @@ const get_products = async (req, res) => {
 async function executeSpecificQuery(category, type) {
   const logic = category && type ? "and" : "or";
   const products = await DB.Product.findAll({
-    limit: 1,
     where: {
       [Op[logic]]: [{ category: category }, { product_type: type }],
     },
