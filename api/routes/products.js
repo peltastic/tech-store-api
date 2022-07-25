@@ -10,5 +10,10 @@ router.post(
 );
 router.get("/getproducts", productsController.get_products);
 router.get("/:id", productsController.get_product);
+router.delete(
+  "/delete/:id",
+  [rolesMiddleware.verifyToken, rolesMiddleware.isAdmin],
+  productsController.delete_product
+);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const DB = require("../../db");
-const { QueryTypes, Op } = require("sequelize");
+const { Op } = require("sequelize");
 
 const { v4 } = require("uuid");
 
@@ -47,15 +47,27 @@ const get_products = async (req, res) => {
   const category = req.query.category || "";
   const type = req.query.type || "";
   const limit = req.query.limit || null;
+  const offset = req.query.offset || null;
   let products;
   if (category || type) {
     products = await executeSpecificQuery(category, type);
   } else {
-    products = await DB.Product.findAll({ limit: limit });
+    products = await DB.Product.findAll({ offset: offset, limit: limit });
   }
 
   return res.status(200).json({ data: products });
 };
+
+const delete_product = async (req, res) => {
+  const id = req.parmas.id;
+  await DB.Product({
+    where: {
+      id: id,
+    },
+  });
+  return res.json({ message: success });
+};
+
 async function executeSpecificQuery(category, type) {
   const logic = category && type ? "and" : "or";
   const products = await DB.Product.findAll({
@@ -65,4 +77,4 @@ async function executeSpecificQuery(category, type) {
   });
   return products;
 }
-module.exports = { add_product, get_products, get_product };
+module.exports = { add_product, get_products, get_product, delete_product };

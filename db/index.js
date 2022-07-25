@@ -8,14 +8,14 @@ const CheckoutModels = require("./models/checkout.model");
 const dbConfig = require("../config/db");
 // const dbConfig = {}
 
-// const sequelize = new Sequelize("tech_store", "postgres", "pex3123", {
+// const sequelize = new Sequelize("tech_store", "postgres", "your password", {
 //   host: "localhost",
 //   dialect: "postgres",
 // });
 const sequelize = new Sequelize(
   dbConfig.DB_DRIVER || "database",
   dbConfig.DB_USER || "postgres",
-  dbConfig.DB_PASSWORD || "pex3123",
+  dbConfig.DB_PASSWORD || "yourpassword",
   {
     host: dbConfig.DB_HOST || "localhost",
     dialect: "postgres",
